@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if flag %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      Your request to join this board has been successfully submitted!
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% end %}
+
+<h3 style="margin-top:2rem;text-align:center;">
+    {{ board.title }}
+    {% if u in board.board_users or u.id == board.admin %}
+    <a href="/board/{{board.title}}/flood">
+<!--        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="{{choice(['red', 'green', 'blue', 'black', 'gray'])}}" class="bi bi-chat-fill" viewBox="0 0 16 16">-->
+<!--          <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z"/>-->
+<!--          <title>Chat room</title>-->
+<!--        </svg>-->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="{{choice(['red', 'green', 'blue', 'black', 'gray'])}}" class="bi bi-messenger" viewBox="0 0 16 16">
+          <path d="M0 7.76C0 3.301 3.493 0 8 0s8 3.301 8 7.76-3.493 7.76-8 7.76c-.81 0-1.586-.107-2.316-.307a.639.639 0 0 0-.427.03l-1.588.702a.64.64 0 0 1-.898-.566l-.044-1.423a.639.639 0 0 0-.215-.456C.956 12.108 0 10.092 0 7.76zm5.546-1.459-2.35 3.728c-.225.358.214.761.551.506l2.525-1.916a.48.48 0 0 1 .578-.002l1.869 1.402a1.2 1.2 0 0 0 1.735-.32l2.35-3.728c.226-.358-.214-.761-.551-.506L9.728 7.381a.48.48 0 0 1-.578.002L7.281 5.98a1.2 1.2 0 0 0-1.735.32z"/>
+          <title>Chat room</title>
+        </svg>
+    </a>
+    {% end %}
+</h3><br>
+
+<div class="card border-success mb-3" style="margin-top:1rem;">
+  <div class="card-body text-success">
+    <h5 class="card-title">About board:</h5>
+    {% if board.about_board %}
+        <p class="card-text">
+            {% raw board.about_board.replace('\n', '<br>') %}
+        </p>
+    {% else %}
+        <p class="card-text">The author of the board has not yet added any description.</p>
+    {% end %}
+  </div>
+</div><br>
+
+<div class="card border-primary mb-3">
+  <div class="card-body text-primary">
+    <h5 class="card-title">Admin of the board</h5>
+    <p class="card-text">
+        {% set s = get_admin(board.admin) %}
+        <a href="/{{s}}" style="text-decoration:none;"><strong>{{s}}</strong></a>
+    </p>
+  </div>
+</div><br>
+
+{% if u in board.board_users and u.id != board.admin %}
+    <div class="card border-secondary mb-3">
+    <nav style="margin-left:1em;margin-top:1em;">
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-1" aria-selected="true">Events for users</button>
+        <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-2" aria-selected="false">Events for teams</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent" style="margin-left:2em;">
+      <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab"><br>
+          {% if not board.user_events %}
+                <p style="color:#777777;">Oops! The admin has not added any events for <b>users</b> yet. Write to him about it <b>right now!</b></p><br>
+          {% else %}
+              {% for u_event in board.user_events %}
+                {% if u not in u_event.users %}
+                    <div class="card" style="width:45em;">
+                      <div class="card-body">
+                        <h5>
+                            <a href="/board/{{board.title}}/user_event/{{u_event.id}}" target="_blank" style="text-decoration:none;color:#333333;">{% raw u_event.title %}</a>
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <p style="color:#777777;">{% raw u_event.about %}</p>
+                      </div>
+                    </div><br>
+                {% else %}
+                    <div class="card" style="width:45em;">
+                      <div class="card-body" style="background:#F5F5F5;">
+                        <h5>
+                            {% raw u_event.title %}&nbsp;<span class="badge rounded-pill bg-secondary">Completed</span>
+                        </h5>
+                      </div>
+                      <div class="card-body" style="background:#F5F5F5;">
+                        <p style="color:#777777;">{% raw u_event.about %}</p>
+                      </div>
+                    </div><br>
+                {% end %}
+              {% end %}
+          {% end %}
+      </div>
+
+      <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab"><br>
+          {% if not board.team_events %}
+                <p style="color:#777777;">Oops! The admin has not added any events for <b>teams</b> yet. Write to him about it <b>right now!</b></p><br>
+          {% else %}
+              {% for t_event in board.team_events %}
+                {% if u not in t_event.teams %}
+                    <div class="card" style="width:45em;">
+                      <div class="card-body">
+                        <h5>
+                            <a href="/board/{{board.title}}/team_event/{{t_event.id}}" target="_blank" style="text-decoration:none;color:#333333;">{% raw t_event.title %}</a>
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <p style="color:#777777;">{% raw t_event.about %}</p>
+                      </div>
+                    </div><br>
+                {% else %}
+                    <div class="card" style="width:45em;">
+                      <div class="card-body" style="background:#F5F5F5;">
+                        <h5>
+                            {% raw t_event.title %}&nbsp;<span class="badge rounded-pill bg-secondary">Completed</span>
+                        </h5>
+                      </div>
+                      <div class="card-body" style="background:#F5F5F5;">
+                        <p style="color:#777777;">{% raw t_event.about %}</p>
+                      </div>
+                    </div><br>
+                {% end %}
+              {% end %}
+          {% end %}
+      </div>
+      <br>
+    </div>
+
+    </div><br>
+{% end %}
+
+{% if board.board_users %}
+    <div class="card border-info mb-3" style="max-width:35rem;" id="BOARD_USERS"></div>
+    <script type="text/javascript">
+var current_page = 1;
+var records_per_page = 20;
+
+var objJson = [ {adName: `<div class="card-header" style="color:#777777"><strong>Users of this board</strong></div>`},
+    {% for user in board.board_users %}
+        { adName: `<div class="card-body">
+        <p class="card-text">
+        {% if not user.name and not user.surname %}
+            <a href="/{{user.username}}" style="color:#333333;text-decoration:none;"><b>{{user.username}}</b></a>
+        {% else %}
+            <a href="/{{user.username}}" style="color:#333333;text-decoration:none;"><b>{{user.username}}</b></a>&nbsp;( {{user.name}} {{user.surname}} )
+        {% end %}
+    </p></div>` },
+    {% end %}
+];
+
+function prevPage()
+{
+    if (current_page > 1) {
+        current_page--;
+        changePage(current_page);
+    }
+}
+
+function nextPage()
+{
+    if (current_page < numPages()) {
+        current_page++;
+        changePage(current_page);
+    }
+}
+
+function changePage(page)
+{
+    var btn_next = document.getElementById("btn_next");
+    var btn_prev = document.getElementById("btn_prev");
+    var listing_table = document.getElementById("BOARD_USERS");
+    var page_span = document.getElementById("page");
+
+    // Validate page
+    if (page < 1) page = 1;
+    if (page > numPages()) page = numPages();
+
+    listing_table.innerHTML = "";
+
+    for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+        listing_table.innerHTML += objJson[i].adName;
+    }
+    page_span.innerHTML = page + "/" + numPages();
+
+    if (page == 1) {
+        btn_prev.style.visibility = "hidden";
+    } else {
+        btn_prev.style.visibility = "visible";
+    }
+
+    if (page == numPages()) {
+        btn_next.style.visibility = "hidden";
+    } else {
+        btn_next.style.visibility = "visible";
+    }
+}
+
+function numPages()
+{
+    return Math.ceil(objJson.length / records_per_page);
+}
+
+window.onload = function() {
+    changePage(1);
+};
+</script>
+{% else %}
+    <div class="card" style="max-width:35rem;">
+      <div class="card-body">
+        There's no one here yet. Do you want to be the first?
+      </div>
+    </div>
+{% end %}
+<br>
+
+{% if board.board_threads %}
+    <div class="card border-warning mb-3" style="max-width:35rem;">
+      <div class="card-header" style="color:#777777"><strong>Threads of this board</strong></div>
+      <div class="card-body">
+      {% for thread in board.board_threads %}
+          <p class="card-text"><b>{{thread.title}} {% raw thread.icon %}</b></p>
+      {% end %}
+      </div>
+    </div>
+{% else %}
+    <div class="card" style="max-width:35rem;">
+      <div class="card-body">
+        The admin has not added any threads yet
+      </div>
+    </div>
+{% end %}
+<br>
+{% if u not in board.board_users and u.id != board.admin %}
+    {% if not flag %}
+        <form method="post">
+            {% module xsrf_form_html() %}
+            <button type="submit" class="btn btn-outline-secondary btn-lg btn-block">Sign up for board</button>
+        </form>
+    {% else %}
+        <button type="submit" class="btn btn-outline-secondary btn-lg btn-block" disabled>You have already sent</button>
+    {% end %}
+{% end %}
+{% if u.id == board.admin %}
+    <a href="/board/{{board.title}}/edit"><button class="btn btn-outline-secondary btn-lg btn-block" style="width:35rem;">Switch to editing mode</button></a>
+
+{% end %}
+{% if u in board.board_users %}
+    <a href="/board/{{board.title}}/leave"><button class="btn btn-outline-danger btn-lg btn-block" style="width:35rem;">Leave this board</button></a>
+
+{% end %}
+<br><br><br>
+{% end %}

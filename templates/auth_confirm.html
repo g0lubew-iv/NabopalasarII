@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<p class="lead">In order to confirm your email, we sent an email with a link to <strong>{{ email }}</strong></p>
+{% if success %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  Email sent successfully. If you can't find it, then look in spam.
+</div>
+{% else %}
+<div class="alert alert-warning" role="alert">
+  <h4 class="alert-heading">Great Ishtar!</h4>
+  <p>There was a failure in sending the message. You can try it:</p>
+  <p>1) Check if the email is correct;</p>
+  <p>2) Check Internet connection;</p>
+  <p>3) Pray to Ishtar.</p>
+  <hr>
+  <p class="mb-0">Please, push the button again.</p>
+  <br><button type="button" class="btn btn-outline-secondary" href="#">Send me</button><br>
+</div>
+{% end %}
+{% end %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<form method="post" name="formE">
+<div class="card">
+      <div class="card-body">
+          <div class="row">
+              <div class="col" style="margin-top:6px;">
+                  <input class="form-check-input mainCheckbox" type="checkbox" name="ntf_ALL" value="" aria-label="...">&nbsp;Select all
+              </div>
+              <div class="col">
+                  {% module xsrf_form_html() %}
+                  <button formaction="/{{current_user.username}}/inbox/check" type="submit" class="btn btn-outline-info" style="margin-left:245px;" id="CheckAll">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                      <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                    Done&nbsp;&nbsp;&nbsp;
+                  </button>
+              </div>
+              <div class="col">
+                  {% module xsrf_form_html() %}
+                  <button formaction="/{{current_user.username}}/inbox/delete" type="submit" class="btn btn-outline-danger" style="margin-left:0px;" id="DeleteAll">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" >
+                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                    Delete&nbsp;&nbsp;
+                  </button>
+              </div>
+          </div>
+      </div>
+</div><br>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  {% for notification in notifications %}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingOne{{notifications.index(notification)}}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne{{notifications.index(notification)}}" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#eeeeee;">
+        {% if notification.is_read == False %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-record-fill" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 13A5 5 0 1 0 8 3a5 5 0 0 0 0 10z"/>
+            </svg>&nbsp;&nbsp;&nbsp;
+        {% end %}
+        <div>
+          <input class="form-check-input otherCheckbox" type="checkbox" name="ntf{{notifications.index(notification)}}" value="" aria-label="...">
+        </div>&nbsp;&nbsp;
+        <div>
+            {% raw notification.name %}
+            {% set a, b = notification.timestamp.split('.')[0].split(' ')[0], ':'.join(notification.timestamp.split('.')[0].split(' ')[1].split(':')[:-1]) %}
+            <small style="color:#777777;margin-left:20em;">{{ a }} {{ b }}</small>
+        </div>
+      </button>
+    </h2>
+    <div id="flush-collapseOne{{notifications.index(notification)}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne{{notifications.index(notification)}}" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+          {% raw notification.get_data().replace('\n', '<br>') %}
+      </div>
+    </div>
+  </div>
+  {% end %}
+</div>
+<script>
+    let allCheckBox = document.querySelector('.mainCheckbox');
+    let otherCheckBoxes = document.querySelectorAll('.otherCheckbox');
+
+    otherCheckBoxes.forEach(item=>{
+      item.addEventListener("click", function(){
+          let checkBoxes = document.querySelectorAll('.otherCheckbox:checked');
+          allCheckBox.checked = checkBoxes.length == otherCheckBoxes.length;
+        })
+    });
+
+
+    allCheckBox.addEventListener("click", function(){
+      otherCheckBoxes.forEach(item=> item.checked = allCheckBox.checked)
+    })
+</script>
+</form>
+{% end %}

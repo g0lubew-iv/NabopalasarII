@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" style="color:#333333;">Users</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false" style="color:#333333;">Profile</button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <!-- ADDING USERS -->
+        <br><form method="post">
+        {% module xsrf_form_html() %}
+            <div class="row">
+                <div class="col">
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">@</div>
+                    </div>
+                    <input type="text" class="form-control" id="inlineFormInputGroup" name="string" placeholder="Enter username">
+                  </div>
+                  <label class="sr-only" for="inlineFormInputGroup"><small style="color:#cccccc;">Enter multiple characters of the username of user you want to add</small></label>
+                </div>
+                <div class="col">
+                  <button type="submit" class="btn btn-outline-primary mb-2" name="btn1">Search</button>
+                </div>
+            </div>
+        <br><br>
+        {% if result %}
+        <div class="list-group" id="USERS_OWN_TEAM"></div>
+
+        <script type="text/javascript">
+var current_page = 1;
+var records_per_page = 50;
+
+var objJson = [
+    {% for user in result %}
+        { adName: `            <label class="list-group-item" style="width:400px;background-color:#ffffff;">
+                {% if result[user] %}
+                    <input class="form-check-input" type="checkbox" name="{{ user }}" id="{{ user }}" checked>
+                    &nbsp;{{ user }}
+                {% else %}
+                    <input class="form-check-input" type="checkbox" name="{{ user }}" id="{{ user }}">
+                    &nbsp;{{ user }}
+                {% end %}
+            </label>` },
+    {% end %}
+];
+
+function prevPage()
+{
+    if (current_page > 1) {
+        current_page--;
+        changePage(current_page);
+    }
+}
+
+function nextPage()
+{
+    if (current_page < numPages()) {
+        current_page++;
+        changePage(current_page);
+    }
+}
+
+function changePage(page)
+{
+    var btn_next = document.getElementById("btn_next");
+    var btn_prev = document.getElementById("btn_prev");
+    var listing_table = document.getElementById("USERS_OWN_TEAM");
+    var page_span = document.getElementById("page");
+
+    // Validate page
+    if (page < 1) page = 1;
+    if (page > numPages()) page = numPages();
+
+    listing_table.innerHTML = "";
+
+    for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+        listing_table.innerHTML += objJson[i].adName;
+    }
+    page_span.innerHTML = page + "/" + numPages();
+
+    if (page == 1) {
+        btn_prev.style.visibility = "hidden";
+    } else {
+        btn_prev.style.visibility = "visible";
+    }
+
+    if (page == numPages()) {
+        btn_next.style.visibility = "hidden";
+    } else {
+        btn_next.style.visibility = "visible";
+    }
+}
+
+function numPages()
+{
+    return Math.ceil(objJson.length / records_per_page);
+}
+
+window.onload = function() {
+    changePage(1);
+};
+</script>
+
+        <nav aria-label="Navigation on pages" style="margin-left:0px;">
+          <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:prevPage()" id="btn_prev">Prev</a></li>
+            <li class="page-item"><a class="page-link" style="color: #cccccc; background: #212529;"><span id="page"></span></a></li>
+            <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:nextPage()" id="btn_next">Next</a></li>
+          </ul>
+        </nav>
+        {% else %}
+        <p class="lead">
+          Nothing found
+        </p>
+        {% end %}
+        <br><button type="submit" class="btn btn-outline-warning" name="btn2">Save changes</button>
+        <a class="btn btn-outline-dark" href="/{{ current_user }}/teams" role="button">Return</a>
+        </form>
+  </div>
+
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      <!-- SEE TEAM'S PROFILE -->
+      <br>
+      <div class="row">
+          <div class="col">
+              <img src="{{static_url(team.avatar[10:])}}" alt="avatar image" width="300" height="300"><br><br>
+              <form enctype="multipart/form-data" method="post">
+              {% module xsrf_form_html() %}
+                    <p><input type="file" name="f"><br><br>
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-outline-info">Change avatar</button>
+                        </div>
+                        <div class="col">
+                            <button type="submit" name="DELETE_team" id="DELETE_team" class="btn btn-outline-danger">Delete team</button>
+                        </div>
+                    </div>
+              </form>
+          </div>
+          <div class="col">
+              <h1 class="display-5">Users:</h1>
+              <br>
+              <ul class="list-unstyled">
+                  {% for user_ in team.users %}
+                        {% if not user_.name and not user_.surname %}
+                            <li><b><a href="/{{user_}}" style="color:#333333;text-decoration:none;">{{user_.username}}</a></b></li>
+                        {% else %}
+                            <li style="color:#888888;"><b><a href="/{{user_}}" style="color:#333333;text-decoration:none;">{{user_.username}}</a></b>&nbsp;( {{user_.name}} {{user_.surname}} )</li>
+                        {% end %}
+                  {% end %}
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% end %}

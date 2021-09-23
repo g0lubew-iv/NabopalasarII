@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link href="https://vjs.zencdn.net/7.14.3/video-js.css" rel="stylesheet" />
+<script src="https://vjs.zencdn.net/7.14.3/video.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{static_url('css/create_event.css')}}"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="{{static_url('js/create_event.js')}}"></script>
+<div id="SRC_NAME" style="display:none;">{{url}}</div><br><br>
+
+<script>
+    window.addEventListener('load', function() {
+  document.querySelector('input[id="img-upload"]').addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+            var img = $('<img>');
+            var SRC = $('#SRC_NAME').text();
+            const form = new FormData();
+            form.append('file', this.files[0]);
+            $.ajax
+            ({
+                    url: SRC,
+                    type: "POST",
+                    data: form,
+                    cache: false,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false
+            });
+          // img.onload = fileIsLoaded;
+          let path = '{{static_url("img/forms_uploads/brr.txt")}}';
+          img.src = path.replaceAll('brr.txt', this.files[0].name);
+          var container = $("#FormsContainer");
+          numberImages++;
+          container.append(`<div class="card text-dark bg-light mb-3" id="IMAGE${numberImages}" style="max-width:50em;display:block;margin-left:auto;margin-right:auto;">
+          <div class="card-body" style="text-align:center;">
+              <div class="flexBigInput" style="font-size:20pt;" contenteditable="true">${numberImages} image</div>
+          </div>
+          <div class="card-body">
+              <img src="${img.src}" alt="Your ${numberImages} image" style="max-width:45em;max-height:45em;">
+          </div>
+          <div class="card-footer">
+                <button class="btn btn-outline-danger" style="margin-left:45.2em;" onclick="deleteIMAGE(${numberImages})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                </button>
+          </div>
+          </div>
+          `);
+      }
+  });
+  document.querySelector('input[id="video-upload"]').addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+          var video = $('<video></video>');
+          var size = 5242880; // bytes
+          if (this.files[0].size > size) {
+            alert('The video is too big! We only accept up to 5 MB!');
+            return;
+          }
+          var SRC = $('#SRC_NAME').text();
+            const form = new FormData();
+            form.append('file', this.files[0]);
+            $.ajax
+            ({
+                    url: SRC,
+                    type: "POST",
+                    data: form,
+                    cache: false,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false
+            });
+          let path = '{{static_url("img/forms_uploads/brr.txt")}}';
+          video.src = path.replaceAll('brr.txt', this.files[0].name);
+          // video.onload = fileIsLoaded;
+          var container = $("#FormsContainer");
+          numberVideos++;
+          container.append(`<div class="card text-dark bg-light mb-3" id="VIDEO${numberVideos}" style="max-width:50em;display:block;margin-left:auto;margin-right:auto;">
+          <div class="card-body" style="text-align:center;">
+              <div class="flexBigInput" style="font-size:20pt;" contenteditable="true">${numberVideos} video</div>
+          </div>
+          <div class="card-body">
+              <video
+                    id="my-video${numberVideos}"
+                    class="video-js"
+                    controls
+                    preload="auto"
+                    poster="{{static_url('img/news/inanna2.gif')}}"
+                    data-setup="{}"
+                    style="width:76em;height:40em;"
+                  >
+                    <source src="${video.src}" type="video/${this.files[0].name.split('.')[this.files[0].name.split('.').length - 1]}" />
+                </video>
+          </div>
+          <div class="card-footer">
+                <button class="btn btn-outline-danger" style="margin-left:45.2em;" onclick="deleteVIDEO(${numberVideos})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                </button>
+          </div>
+          </div>
+          `);
+      }
+  });
+  document.querySelector('input[id="file-upload"]').addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+          file = this.files[0];
+          var container = $("#FormsContainer");
+          if (
+              file.type === "text/html" ||
+              file.type === "text/css" ||
+              file.type === "text/javascript"
+            ) {
+              alert("NO! We cannot get .html, .css or .js files!");
+              return;
+              }
+
+          if (file.type === "application/pdf") {
+                const iframe = $("<div></div>");
+                var SRC = $('#SRC_NAME').text();
+                const form = new FormData();
+                form.append('file', this.files[0]);
+                $.ajax
+                ({
+                        url: SRC,
+                        type: "POST",
+                        data: form,
+                        cache: false,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false
+                });
+                let path = '{{static_url("img/forms_uploads/brr.txt")}}';
+                iframe.src = path.replaceAll('brr.txt', this.files[0].name);
+                iframe.width = innerWidth;
+                iframe.height = innerHeight;
+                numberFiles++;
+                container.append(`<div class="card text-dark bg-light mb-3" id="FILE${numberFiles}" style="max-width:50em;display:block;margin-left:auto;margin-right:auto;">
+                  <div class="card-body" style="text-align:center;">
+                      <div class="flexBigInput" style="font-size:20pt;" contenteditable="true">${numberFiles} file</div>
+                  </div>
+                  <div class="card-body">
+                      <iframe src="${iframe.src}" style="width:48em;height:35em;"></iframe>
+                  </div>
+                  <div class="card-footer">
+                        <button class="btn btn-outline-danger" style="margin-left:45.2em;" onclick="deleteFILE(${numberFiles})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                        </button>
+                  </div>
+                  </div>
+                  `);
+                URL.revokeObjectURL(file);
+                return;
+          }
+
+          const reader = new FileReader();
+          reader.readAsText(file, "utf-8");
+
+          reader.onload = function() {
+            numberFiles++;
+            container.append(`<div class="card text-dark bg-light mb-3" id="FILE${numberFiles}" style="max-width:50em;display:block;margin-left:auto;margin-right:auto;">
+                  <div class="card-body" style="text-align:center;">
+                      <div class="flexBigInput" style="font-size:20pt;" contenteditable="true">${numberFiles} file</div>
+                  </div>
+                  <div class="card-body">
+                      <p>${reader.result}</p>
+                  </div>
+                  <div class="card-footer">
+                        <button class="btn btn-outline-danger" style="margin-left:45.2em;" onclick="deleteFILE(${numberFiles})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                        </button>
+                  </div>
+                  </div>
+                  `);
+          };
+
+          reader.onerror = function() {
+            console.log(reader.error);
+          };
+      }
+  });
+});
+</script>
+
+<div class="card text-dark bg-light mb-3" style="max-width:50em;display:block;margin-left:auto;margin-right:auto;">
+  <div class="card-body" style="text-align:center;">
+      <div class="flexBigInput" name="title_event" contenteditable="true">New event</div>
+  </div>
+  <div class="card-body">
+      <div class="flexSmallInput" name="description_event" contenteditable="true">Description</div>
+  </div>
+  <div class="card-footer">
+        <input type='radio' id='secondary' name='COLOR' onclick="changeColor(this.id)" checked/>
+        <input type='radio' id='primary' name='COLOR' onclick="changeColor(this.id)"/>
+        <input type='radio' id='success' name='COLOR' onclick="changeColor(this.id)"/>
+        <input type='radio' id='danger' name='COLOR' onclick="changeColor(this.id)"/>
+        <input type='radio' id='warning' name='COLOR' onclick="changeColor(this.id)"/>
+  </div>
+</div>
+
+<div class="FormsContainer" name="FormsContainer" id="FormsContainer">
+    <div class="card border-secondary mb-3" name="Form" style="max-width:50em;display:block;margin-left:auto;margin-right:auto;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="formTitle" contenteditable="true">Form without a header</div>
+                </div>
+                <div class="col">
+                    <select class="form-select" style="width:20em;margin-left:5em;" id="SELECT1" onclick="selectForm(1)">
+                      <option disabled selected>None</option>
+                      <option class="sel1">Text (string)</option>
+                      <option class="sel2">Text (paragraph)</option>
+                      <option class="sel3"> One  from the list</option>
+                      <option class="sel4">A few from the list</option>
+                      <option class="sel5">Uploading a file</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="result1"></div><br>
+            <div class="flexSmallInput" name="description_form" contenteditable="true">... And without a description?</div>
+        </div>
+        <br>
+        <div class="card-footer">
+            <div class="btn-group btn-group-sm" name="buttonsGroup" role="group" style="margin-left:43.5em;">
+                <button class="btn btn-outline-success" id="btnCLONE1" onclick="copyForm('btnCLONE1')">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16">
+                      <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"/>
+                    </svg>
+                </button>
+                <button class="btn btn-outline-danger" onclick="deleteForm(1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn_center">
+        <div class="btn-group" role="group" aria-label="...">
+        <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Add a new form" onclick="copyForm(`btnCLONE${numberForms}`)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+              <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+        </button>
+        <label for="file-upload" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Load a new file (all text files, .pdf, .json)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+              <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707V11.5z"/>
+              <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+            </svg>
+        </label>
+        <input id="file-upload" type="file" multiple accept="text/*, application/pdf, application/json"/>
+        <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Add new title and descriptions" onclick="createNewTitle()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-text" viewBox="0 0 16 16">
+              <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+              <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </button>
+        <label for="img-upload" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Add a new image (.jpg, .jpeg, .png, .gif, etc)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-image" viewBox="0 0 16 16">
+              <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+              <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13zm13 1a.5.5 0 0 1 .5.5v6l-3.775-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12v.54A.505.505 0 0 1 1 12.5v-9a.5.5 0 0 1 .5-.5h13z"/>
+            </svg>
+        </label>
+            ДОБАВИТЬ В МОДЕЛЬ СОБЫТИЙ, ПРИНИМАЮТСЯ ЛИ ОТВЕТЫ
+        <input id="img-upload" name="img-upload" type="file" multiple accept="image/*"/>
+        <label for="video-upload" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Add a new video (.webm, .mp3, mb, etc)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-btn" viewBox="0 0 16 16">
+              <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+              <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+            </svg>
+        </label>
+        <input id="video-upload" type="file" multiple accept="video/*"/>
+        </div>
+</div>
+<input type="submit" id="sendButton" style="display:none;" />
+
+<div class="btn_centerBIG">
+    <button class="btn btn-outline-warning" onclick="saveChanges('{{url}}');">Add event</button>
+</div><br><br><br>
+<!--<div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--  <div class="modal-dialog">-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <h5 class="modal-title" id="exampleModalLabel">Notification</h5>-->
+<!--      </div>-->
+<!--      <div class="modal-body">-->
+<!--        Changes are available on the board!-->
+<!--      </div>-->
+<!--      <div class="modal-footer">-->
+<!--        <button type="button" class="btn btn-success" onclick="saveChanges('{{url}}');window.close();">OK</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+{% end %}

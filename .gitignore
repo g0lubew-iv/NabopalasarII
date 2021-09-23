@@ -1,0 +1,9 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# Files (and directories) that affect our privacy
+.env
+auto

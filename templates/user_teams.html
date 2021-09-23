@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <br>
+  <nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="OwnTeams-tab" data-bs-toggle="tab" data-bs-target="#OwnTeams" type="button" role="tab" aria-controls="OwnTeams" aria-selected="true" style="color:#333333;">Own teams</button>
+    <button class="nav-link" id="InTeams-tab" data-bs-toggle="tab" data-bs-target="#InTeams" type="button" role="tab" aria-controls="InTeams" aria-selected="false" style="color:#333333;">In teams</button>
+  </div>
+  </nav>
+  <link rel="stylesheet" type="text/css" href="{{static_url('css/team_dsc.css')}}"/>
+
+    <div class="tab-content" id="nav-tabContent">
+
+      <!-- OWN teams of user -->
+      <div class="tab-pane fade show active" id="OwnTeams" role="tabpanel" aria-labelledby="OwnTeams-tab">
+          {% if not own_teams %}
+          <br><div class="card">
+              <div class="card-header"><h2 class="card-title" align="center">Oops!</h2></div>
+              <div class="card-body">
+                    You don't have a single team right now!<br>
+                  If you <a href="/confirm" style="color:#000000;">have confirmed</a> your email address, you can create your own new team and add several users there.<br>
+                    Please don't be upset, friend Schumer!<br>
+              </div>
+          </div><br>
+          {% end %}
+
+          <br><div class="accordion accordion-flush" id="OWN_TEAMS"></div><br>
+
+          <script>
+              var current_page = 1;
+var records_per_page = 35;
+
+var objJson = [
+    {% for team in own_teams %}
+        { adName: `<div class="accordion-item">
+        <h2 class="accordion-header" id="HEAD{{team.title}}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#P{{team.title}}" aria-expanded="true" aria-controls="P{{team.title}}">
+        <strong>{{team.title}}</strong>
+        </button>
+        </h2>
+        <div id="P{{team.title}}" class="accordion-collapse collapse" aria-labelledby="HEAD{{team.title}}">
+        <div class="accordion-body">
+        <seciton class="content">
+        <div class="content-wrap">
+        <div class="item">
+        <img src="{{static_url(f'{team.avatar[10:]}')}}" alt="avatar image" width="300" height="300">
+        </div>
+        <div class="cont-text">
+        <h2>{{team.title}}&nbsp;
+        <a href="/team/{{ team.title }}/edit"><span class="badge rounded-pill bg-warning text-dark">Edit</span></a>
+        </h2>
+        {% set cap=get_cap(team.chief).username %}
+        <p class="cap">Team members:</p>
+        {% if team.users %}
+            {% for user_ in team.users %}
+                <ul class="list-unstyled">
+                    {% if not user_.name and not user_.surname %}
+                    <li><a href="/{{user_}}" style="color:#333333;text-decoration:none;">{{user_.username}}</a></li>
+                    {% else %}
+                    <li style="color:#888888;"><a href="/{{user_}}" style="color:#333333;text-decoration:none;">{{user_.username}}</a>&nbsp;( {{user_.name}} {{user_.surname}} )</li>
+                    {% end %}
+                </ul>
+            {% end %}
+        {% else %}<p>There are no members yet. If you want to add more users, go to the <a href='/team/{{ team.title }}/edit' style='color:#000000;'>command editing mode</a></p>
+        {% end %}</div>
+        </div></seciton></div></div></div>` },
+    {% end %}
+        ];
+
+        function prevPage()
+        {
+            if (current_page > 1) {
+                current_page--;
+                changePage(current_page);
+            }
+        }
+
+        function nextPage()
+        {
+            if (current_page < numPages()) {
+                current_page++;
+                changePage(current_page);
+            }
+        }
+
+        function changePage(page)
+        {
+            var btn_next = document.getElementById("btn_next");
+            var btn_prev = document.getElementById("btn_prev");
+            var listing_table = document.getElementById("OWN_TEAMS");
+            var page_span = document.getElementById("page");
+
+            // Validate page
+            if (page < 1) page = 1;
+            if (page > numPages()) page = numPages();
+
+            listing_table.innerHTML = "";
+
+            for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+                listing_table.innerHTML += objJson[i].adName;
+            }
+            page_span.innerHTML = page + "/" + numPages();
+
+            if (page == 1) {
+                btn_prev.style.visibility = "hidden";
+            } else {
+                btn_prev.style.visibility = "visible";
+            }
+
+            if (page == numPages()) {
+                btn_next.style.visibility = "hidden";
+            } else {
+                btn_next.style.visibility = "visible";
+            }
+        }
+
+        function numPages()
+        {
+            return Math.ceil(objJson.length / records_per_page);
+        }
+
+        window.onload = function() {
+            changePage(1);
+        };
+          </script>
+
+          <nav aria-label="Navigation on pages">
+              {% if current_user.is_confirmed %}
+                <a type="button" class="btn btn-outline-secondary btn-lg btn-block" href="/{{ current_user.username }}/create_team">Create your own team!</a>
+              {% else %}
+                <button type="button" class="btn btn-outline-secondary btn-lg btn-block" disabled>Create your own team!</button>
+              {% end %}
+              <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:prevPage()" id="btn_prev">Prev</a></li>
+                <li class="page-item"><a class="page-link" style="color: #cccccc; background: #212529;"><span id="page"></span></a></li>
+                <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:nextPage()" id="btn_next">Next</a></li>
+              </ul>
+          </nav>
+      </div>
+
+      <!-- IN teams of user -->
+      <div class="tab-pane fade" id="InTeams" role="tabpanel" aria-labelledby="InTeams-tab">
+        {% if not in_teams %}
+        <br><div class="card">
+              <div class="card-header"><h2 class="card-title" align="center">Oops!</h2></div>
+              <div class="card-body">
+                    You are not currently a member of any team!<br>
+                    Unfortunately, there's probably nothing you can do about it. Ask your Akkadian friends (if there are any) to call you.<br>
+                    <a href="/teams" style="color:#000000;">Here</a> is a list of all the commands. Find your friend among the captains!<br>
+                    Please don't be upset, friend Schumer!
+              </div>
+          </div><br>
+        {% end %}
+        <br>
+        <div class="accordion accordion-flush" id="IN_TEAMS">
+            {% for team in in_teams %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="HEAD{{team.title}}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#P{{team.title}}" aria-expanded="true" aria-controls="P{{team.title}}">
+                    <strong>{{team.title}}</strong>
+                    </button>
+                </h2>
+            <div id="P{{team.title}}" class="accordion-collapse collapse" aria-labelledby="HEAD{{team.title}}">
+            <div class="accordion-body">
+            <seciton class="content">
+            <div class="content-wrap">
+            <div class="item">
+            <img src="{{static_url(f'{team.avatar[10:]}')}}" alt="avatar image" width="300" height="300">
+            </div>
+            <div class="cont-text">
+            <h2>
+            {{team.title}}&nbsp;
+            <a href="/team/{{ team.title }}/leave"><span class="badge rounded-pill bg-danger">Leave</span></a>
+            </h2>
+            {% set cap1=get_cap(team.chief).username %}
+            <p class="cap">
+            Capitan<a href="/{{cap}}" style="color:#000000;text-decoration:none;">
+            <b>{{cap1}}</b></a></p>
+            <p class="cap">Other members:</p>
+            {% for user1_ in team.users %}
+                <ol class="list-unstyled">
+                    {% if user1_.username != current_user.username %}
+                        {% if not user1_.name and not user1_.surname %}
+                            <li><a href="/{{user1_}}" style="color:#333333;text-decoration:none;">{{user1_.username}}</a></li>
+                        {% else %}
+                            <li style="color:#888888;"><a href="/{{user1_}}" style="color:#333333;text-decoration:none;">{{user1_.username}}</a>&nbsp;( {{user1_.name}} {{user1_.surname}} )</li>
+                        {% end %}
+                    {% end %}
+                </ol>
+            {% end %}</div>
+            </div></seciton></div></div></div>
+        {% end %}
+        </div>
+
+      </div>
+    </div>
+{% end %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="{{static_url('js/view_answers.js')}}"></script>
+
+<br>
+<div class="row">
+    <div class="col">
+        <select class="form-select" id="SELECT" style="width:15em;" onclick="selectForm({{ list(map(lambda x: list(x)[0], answers)) }});">
+                <option class="selNone" value="none" selected>Nothing</option>
+            {% for d in answers %}
+                <option class="SSS{{list(d)[0]}}" value="{{list(d)[0]}}" id="sel{{list(d)[0]}}">{{ list(d)[0] }}</option>
+            {% end %}
+        </select>
+    </div>
+    <div class="col">
+        <!-- Кнопка выпадающего списка вправо по умолчанию -->
+        <div class="btn-group dropend" style="margin-left:-20em;">
+          <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Actions
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item active" href="#">Viewing</a></li>
+            <li><a class="dropdown-item" href="#">Distribute by questions</a></li>
+            <li><a class="dropdown-item" href="#">Download all responses (as json)</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Delete all responses</a></li>
+          </ul>
+        </div>
+    </div>
+</div>
+
+<div id="results">
+    {% for d in answers %}
+        <div class="sel{{list(d)[0]}}">{% raw d[list(d)[0]] %}</div>
+    {% end %}
+</div>
+
+<style>
+    {% for d in answers %}
+        .sel{{list(d)[0]}} {
+            display: none;
+        }
+    {% end %}
+</style>
+{% end %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set res = event.html.replace("""<script src="{{static_url('js/create_event.js')}}"></script>""", "").replace('readonly', '').replace('disabled', '').replace('Detailed user answer', '').replace('Description', 'Without a description').replace('... And without a description?', 'Without a description').replace('And... new description?', 'Without a description').replace('Short user answer', '').replace('&nbsp;', '') %}
+{% raw res %}
+<button type="button" name="submitForm" class="btn btn-outline-warning btn-lg" style="margin-left:7.9em;" onclick="post_results('{{url}}');">Submit</button>
+<br><br><br>
+<script src="{{static_url('js/event.js')}}"></script>
+{% end %}

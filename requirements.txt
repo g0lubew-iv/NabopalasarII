@@ -1,0 +1,7 @@
+SQLAlchemy~=1.4.11
+DateTime~=4.3
+Werkzeug==2.0.1
+WTForms~=2.3.3
+tornado~=6.1
+pytz~=2021.1
+itsdangerous==2.0.1

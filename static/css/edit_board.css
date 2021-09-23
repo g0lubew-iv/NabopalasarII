@@ -1,0 +1,41 @@
+a:link{
+  text-decoration:none;
+  color:#ffffff;
+}
+
+.outline{
+    margin:0 auto;
+    box-sizing:border-box;
+    width:40px;
+    height:40px;
+    border:solid 2px #123596;
+    display:block;
+    border-radius:35px;
+    opacity:1;
+    background:#eeeeee;
+}
+
+.outline:hover {
+    width:40px;
+    height:40px;
+    border:solid 2px #36baff;
+    opacity:1;
+    background:rgba(099,099,099,0);
+    transition:1s;
+    -webkit-transform:rotate(360deg);
+}
+
+.outline:active {
+  border:solid 1px #ffb400;
+  transition:0s;
+}
+
+.touch:active {
+  width:40px;
+  height:40px;
+  border-radius: 35px;
+  box-sizing: border-box;
+  border:solid 10px tansparent;
+  background: blue;
+  transition: .6 ease;
+}

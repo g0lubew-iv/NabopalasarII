@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <title>{{ title }}</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ static_url('css/style.css') }}"/>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <!-- App's Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ static_url('img/package/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ static_url('img/package/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ static_url('img/package/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ static_url('img/package/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ static_url('img/package/safari-pinned-tab.svg') }}" color="#5bbad5">
+    {% block head %}{% end %}
+  </head>
+  <body>
+    <header>
+        <nav class="navbar navbar-dark bg-dark" style="height:75px">
+            <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="{{ static_url('img/package/favicon-32x32.png') }}" class="rounded-circle" alt="avatar image" width="32" height="32">
+                <strong>
+                    Nabopalasar II
+                </strong>
+            </a>
+            <script>
+                var lastResFind="";
+                var copy_page="";
+
+                function TrimStr(s) {
+                     s = s.replace( /^\s+/g, '');
+                  return s.replace( /\s+$/g, '');
+                }
+
+                function FindOnPage(inputId) {
+                  var obj = window.document.getElementById(inputId);
+                  var textToFind;
+
+                  if (obj) {
+                    textToFind = TrimStr(obj.value);
+                  } else {
+                    alert("The entered phrase was not found!");
+                    return;
+                  }
+                  if (textToFind == "") {
+                    alert("You didn't enter anything!");
+                    return;
+                  }
+
+                  if(document.body.innerHTML.indexOf(textToFind) == "-1")
+                    alert("Nothing was found, check the correctness of the input!");
+
+                  if(copy_page.length>0)
+                        document.body.innerHTML=copy_page;
+                  else copy_page=document.body.innerHTML;
+
+
+                  document.body.innerHTML = document.body.innerHTML.replace(eval("/name=" + lastResFind + "/gi"), " ");
+                  document.body.innerHTML = document.body.innerHTML.replace(eval("/" + textToFind + "/gi"), "<a name="+textToFind+" style='background:yellow'>" + textToFind + "</a>");
+                  lastResFind=textToFind;
+                  window.location = '#'+textToFind;
+                 }
+            </script>
+            <form class="d-flex justify-content-start" style="margin-left: -600px;">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="text-to-find" value="" style="background: #212529; color: #ffffff">
+              <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
+              <button class="btn btn-outline-success" type="button" onclick="javascript: FindOnPage('text-to-find'); return false;">Search</button>
+            </form>
+            {% if current_user %}
+                <!-- Yes, navbar in navbar but it works -->
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                  <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                      <ul class="navbar-nav navbar-nav-scroll">
+                        <li class="nav-item dropstart">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ static_url(f'{current_user.avatar[10:]}') }}" class="rounded-circle" alt="avatar image" width="30" height="30">
+                          </a>
+                          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a class="dropdown-item" href="#">Signed as</a>
+                                    <a class="dropdown-item" href="/{{ current_user.username }}">
+<!--                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">-->
+<!--                                          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>-->
+<!--                                          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>-->
+<!--                                        </svg>-->
+                                        <strong style="color:#ffffff;">{{ current_user.username }}</strong>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                            </li>
+                            <li><a class="dropdown-item" href="/{{ current_user.username }}/teams">Your teams</a></li>
+                            <li><a class="dropdown-item" href="/{{ current_user.username }}/boards">Your boards</a></li>
+                            <li><div class="dropdown-divider"></div></li>
+                            {% if current_user.is_confirmed %}
+                                <li><a class="dropdown-item" href="/{{ current_user.username }}/create_team">Create team</a></li>
+                                <li><a class="dropdown-item" href="/{{ current_user.username }}/create_board">Create board</a></li>
+                                <li><div class="dropdown-divider"></div></li>
+                            {% end %}
+                            <li><a class="dropdown-item" id="logout" href="/auth/logout">Sign out</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- User notice-box -->
+                    <a href="/{{ current_user }}/inbox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-bell" viewBox="0 0 16 16" style="margin-right: 8px;">
+                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                            <title>Notifications</title>
+                        </svg>
+                    </a>
+                    <a href="/legal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-question-circle" viewBox="0 0 16 16" style="margin-right: 8px;">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                          <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                          <title>Help</title>
+                        </svg>
+                    </a>
+                  </div>
+                </nav>
+            {% else %}
+            <p>
+                <a class="btn btn-primary " href="/auth/create" style="margin-top:11px;">Sign up</a>
+                <a class="btn btn-success" href="/auth/login" style="margin-top:11px;margin-right:30px;">Sign in</a>
+            </p>
+            {% end %}
+            </div>
+        </nav>
+    </header>
+    <!-- Begin page content -->
+    <main role="main" class="container">
+    {% block content %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Great Ishtar!</strong> This site enjoys not only the blessing of Marduk, but also cookies (see <a href="/legal/cookie-policy">Cookie policy</a>)
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% if current_user and not current_user.is_confirmed%}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <p><strong>Great Ishtar!</strong> You have not confirmed your email!<br>
+                Without it, some functions are not available to you.<br>
+                Follow <a href="/auth/confirm">this link</a> so that we will send you another confirmation email
+            </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% end %}
+        <!-- Most important content: news, boards, teams, etc -->
+        <br>
+        <nav class="nav nav-pills flex-column flex-sm-row">
+            <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" style="color: #cccccc; background: #212529;" href="#"><b>News</b></a>
+          <a class="flex-sm-fill text-sm-center nav-link" style="color: #333333;" href="/boards"><b>Boards</b></a>
+          <a class="flex-sm-fill text-sm-center nav-link" style="color: #333333;" href="/teams"><b>Teams</b></a>
+        </nav>
+        <div id="PagSupports"></div>
+        <script>
+            var current_page = 1;
+            var records_per_page = 2;
+
+            var objJson = [
+                {% for new in news_[::-1] %}
+                    { adName: `<br>
+                                {% if not current_user %}
+                                    <!-- We can't show news from the boards if the user is not registered, only news of our team :( -->
+                                    {% if "Nabopalasar II team" in new %}
+                                        {% raw new %}
+                                    {% end %}
+                                {% else %}
+                                    {% raw new %}
+                                {% end %}` },
+                {% end %}
+            ];
+
+            function prevPage()
+            {
+                if (current_page > 1) {
+                    current_page--;
+                    changePage(current_page);
+                }
+            }
+
+            function nextPage()
+            {
+                if (current_page < numPages()) {
+                    current_page++;
+                    changePage(current_page);
+                }
+            }
+
+            function changePage(page)
+            {
+                var btn_next = document.getElementById("btn_next");
+                var btn_prev = document.getElementById("btn_prev");
+                var listing_table = document.getElementById("PagSupports");
+                var page_span = document.getElementById("page");
+
+                // Validate page
+                if (page < 1) page = 1;
+                if (page > numPages()) page = numPages();
+
+                listing_table.innerHTML = "";
+
+                for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+                    listing_table.innerHTML += objJson[i].adName;
+                }
+                page_span.innerHTML = page + "/" + numPages();
+
+                if (page == 1) {
+                    btn_prev.style.visibility = "hidden";
+                } else {
+                    btn_prev.style.visibility = "visible";
+                }
+
+                if (page == numPages()) {
+                    btn_next.style.visibility = "hidden";
+                } else {
+                    btn_next.style.visibility = "visible";
+                }
+            }
+
+            function numPages()
+            {
+                return Math.ceil(objJson.length / records_per_page);
+            }
+
+            window.onload = function() {
+                changePage(1);
+            };
+        </script>
+        <nav aria-label="Navigation on pages">
+          <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:prevPage()" id="btn_prev">Prev</a></li>
+            <li class="page-item"><a class="page-link" style="color: #cccccc; background: #212529;"><span id="page"></span></a></li>
+            <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:nextPage()" id="btn_next">Next</a></li>
+          </ul>
+        </nav>
+    {% end %}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4">Create board</h1>
+<form action="" method="post">
+    {% module xsrf_form_html() %}<br>
+    <p>
+        {% raw form.title.label %}<br>
+        {% raw form.title(class_="form-control", placeholder="Enter board title") %}
+        <small class="form-text text-muted">Board title must be unique (and preferably decent)</small>
+        {% for error in form.title.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}
+        {% if message_title %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Great Ishtar!</strong> {{ message_title }}
+        </div>
+        {% end %}<br>
+    </p>
+
+    <p>
+        {% raw form.about_board.label %}<br>
+        {% raw form.about_board(class_="form-control", placeholder="Enter board description") %}
+        <small class="form-text text-muted">It is very important to write the essence of your board so that it can be found</small>
+        {% for error in form.about_board.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}<br>
+    </p>
+
+    <br><p class="lead">You can add threads in the board <b>Edit mode</b></p><br>
+
+    <p>{% raw form.submit(type="submit", class_="btn btn-primary") %}</p>
+</form>
+{% end %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4">Create account</h1><br>
+<form action="" method="post">
+    {% module xsrf_form_html() %}
+    <p>
+        {% raw form.username.label %}<br>
+        {% raw form.username(class_="form-control", placeholder="Enter username") %}
+        <small class="form-text text-muted">Username must be unique</small>
+        {% for error in form.username.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}
+        {% if message_username %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Great Ishtar!</strong> {{ message_username }}
+        </div>
+        {% end %}<br>
+    </p>
+    <p>
+        {% raw form.email.label %}<br>
+        {% raw form.email(class_="form-control", type="email", aria_describedby="emailHelp", placeholder="Enter email") %}
+        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+        {% for error in form.email.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}
+        {% if message_email %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Great Ishtar!</strong> {{ message_email }}
+        </div>
+        {% end %}<br>
+    </p>
+    <p>
+        {% raw form.password.label %}<br>
+        {% raw form.password(class_="form-control", type="password", aria_describedby="passwordHelp", placeholder="Password") %}
+        <small class="form-text text-muted">Make sure it's at least 15 characters OR at least 8 characters including a number and a lowercase letter.</small><br>
+        {% for error in form.password.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}
+    </p>
+    <p>
+        {% raw form.password_again.label %}<br>
+        {% raw form.password_again(class_="form-control", type="password", placeholder="Repeated password") %}
+        {% for error in form.password_again.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}
+        {% if message_password %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Great Ishtar!</strong> {{ message_password }}
+        </div>
+        {% end %}<br>
+    </p>
+    <p>{% raw form.submit(type="submit", class_="btn btn-primary") %}</p>
+</form>
+{% end %}

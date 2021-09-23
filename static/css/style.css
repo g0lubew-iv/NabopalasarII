@@ -1,0 +1,46 @@
+::-webkit-scrollbar-button {
+background-image:url('');
+background-repeat:no-repeat;
+width:5px;
+height:0px;
+}
+
+::-webkit-scrollbar-track {
+background-color:#ffffff;
+}
+
+::-webkit-scrollbar-thumb {
+-webkit-border-radius: 0px;
+background-color:#212529;
+}
+
+::-webkit-scrollbar-thumb:hover{
+background-color:#666666;
+}
+
+::-webkit-resizer{
+background-image:url('');
+background-repeat:no-repeat;
+width:7px;
+height:0px;
+}
+
+::-webkit-scrollbar{
+width: 7px;
+border-radius:10px;
+}
+
+.html {
+    scrollbar-color: #6969dd #e0e0e0;
+    scrollbar-width: thin;
+}
+
+/*select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}*/
+
+/*a[id='logout'] {
+    color:red;
+}*/

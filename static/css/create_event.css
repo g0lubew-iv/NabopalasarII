@@ -1,0 +1,146 @@
+.flexBigInput {
+  border:none;
+  outline:none;
+  display:inline-block;
+  max-width:15em;
+  text-align:center;
+  font-size:25pt;
+}
+
+.flexInput {
+  border:none;
+  outline:none;
+  display:inline-block;
+  max-width:35em;
+  font-size:13pt;
+  margin-left:3px;
+}
+
+.flexSmallInput {
+  border:none;
+  outline:none;
+  max-width:40em;
+  font-size:12pt;
+  display:inline-block;
+  color:#777777;
+}
+
+.formTitle {
+  border:none;
+  outline:none;
+  max-width:20em;
+  font-size:16pt;
+  display:inline-block;
+}
+
+.btn_center {
+  width:3em;
+  height:3em;
+  position:relative;
+  left:43%;
+  transform:translate(-50%, 0);
+}
+
+.btn_centerBIG {
+  width:35em;
+  position:relative;
+  left:70.5%;
+  transform:translate(-50%, 0);
+}
+
+.formUserOneAnswer {
+  outline:none;
+  width:25em;
+  color:#777777;
+}
+
+.formUserManyAnswer {
+  outline:none;
+  width:25em;
+  color:#777777;
+}
+
+input[type='radio'] {
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border:1px solid darkgray;
+    border-radius:50%;
+    outline:none;
+}
+
+input[type='radio']:before {
+    content:'';
+    display:block;
+    width:100%;
+    height:100%;
+    /*margin: 20% auto;    */
+    border-radius:50%;
+}
+
+input[id='secondary']:checked:before {
+    background:gray;
+}
+
+input[id='primary']:checked:before {
+    background:blue;
+}
+
+input[id='success']:checked:before {
+    background:green;
+}
+
+input[id='danger']:checked:before {
+    background:red;
+}
+
+input[id='warning']:checked:before {
+    background:yellow;
+}
+
+div[class='formFileCCC'] {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10em;
+  font-weight: bold;
+  border: 6px solid;
+  border-radius: 8px;
+  user-select: none;
+  cursor: pointer;
+}
+
+input[class='formFileEEE'] {
+  display: none;
+}
+
+.modal-body {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 20em;
+  min-height: 15em;
+  color: #222;
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+input[id="img-upload"] {
+    display: none;
+}
+
+input[id="video-upload"] {
+    display: none;
+}
+
+input[id="file-upload"] {
+    display: none;
+}

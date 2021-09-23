@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4">Create team</h1>
+<form action="" method="post">
+    {% module xsrf_form_html() %}<br>
+    <p>
+        {% raw form.title.label %}<br>
+        {% raw form.title(class_="form-control", placeholder="Enter team title") %}
+        <small class="form-text text-muted">Team title must be unique</small>
+        {% for error in form.title.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% end %}
+        {% if message_title %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Great Ishtar!</strong> {{ message_title }}
+        </div>
+        {% end %}<br>
+    </p>
+
+    <p class="lead">Another settings (avatar, adding users, etc) can be found in the team <b>Edit section</b></p>
+
+    <p>{% raw form.submit(type="submit", class_="btn btn-primary") %}</p>
+</form>
+{% end %}

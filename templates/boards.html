@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ static_url('css/team_dsc.css') }}"/>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Great Ishtar!</strong> This site enjoys not only the blessing of Marduk, but also cookies (see <a href="/legal/cookie-policy">Cookie policy</a>)
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<br>
+<nav class="nav nav-pills flex-column flex-sm-row">
+    <a class="flex-sm-fill text-sm-center nav-link" style="color: #333333;" href="/"><b>News</b></a>
+    <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" style="color: #cccccc; background: #212529;" href="#"><b>Boards</b></a>
+    <a class="flex-sm-fill text-sm-center nav-link" style="color: #333333;" href="/teams"><b>Teams</b></a>
+</nav>
+<br>
+<div class="card">
+  <div class="card-header"><h2 class="card-title" align="center">List of boards</h2></div>
+  <div class="card-body">
+    Here you can see <b>all the boards</b>, their description, users, even try to sign up for any of them!<br>
+    <small style="color:#bbbbbb;">Only whether they will accept you... it's not up to us...</small>
+  </div>
+</div><br>
+
+<div class="accordion accordion-flush" id="BOARDS"></div>
+
+<script type="text/javascript">
+var current_page = 1;
+var records_per_page = 15;
+
+var objJson = [
+    {% for board in boards %}
+        { adName: `<div class="accordion-item">
+        <h2 class="accordion-header" id="HEAD{{board.title}}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#P{{board.title}}" aria-expanded="true" aria-controls="P{{board.title}}">
+        <strong>{{board.title}}</strong>
+        </button>
+        </h2>
+        <div id="P{{board.title}}" class="accordion-collapse collapse" aria-labelledby="HEAD{{board.title}}">
+        <div class="accordion-body">
+        <seciton class="content">
+        <div class="content-wrap">
+        <div class="item">
+        <img src="{{ static_url('img/news/cwc.jpg') }}" alt="avatar image" width="300" height="300">
+        </div>
+        <div class="cont-text">
+        <a href="/board/{{board.title}}/view" style="color:#000000;text-decoration:none;"><h2>{{board.title}}</h2></a>
+        {% set cap=get_admin(board.admin).username %}
+        <p class="cap">
+        Admin<a href="/{{cap}}" style="color:#000000;text-decoration:none;">
+        <b>{{cap}}</b></a></p>
+        <p class="cap">Description:</p>
+        {% if board.about_board %}
+            <p>{% raw board.about_board.replace('\n', '<div>') %}</p>
+        {% else %}
+            <p>The author of the board has not yet added any description.</p>
+        {% end %}
+        <p class="cap">Board members:</p>
+        {% if board.board_users %}
+            {% for user_ in board.board_users[:10] %}
+            <ul class="list-unstyled">
+                <li>{{user_.username}}</li>
+            </ul>
+        {% end %}
+        {% else %}<p>There are no members yet. Do you want to be the first?</p>
+        {% end %}</div>
+        </div></seciton></div></div></div>` },
+    {% end %}
+];
+
+function prevPage()
+{
+    if (current_page > 1) {
+        current_page--;
+        changePage(current_page);
+    }
+}
+
+function nextPage()
+{
+    if (current_page < numPages()) {
+        current_page++;
+        changePage(current_page);
+    }
+}
+
+function changePage(page)
+{
+    var btn_next = document.getElementById("btn_next");
+    var btn_prev = document.getElementById("btn_prev");
+    var listing_table = document.getElementById("BOARDS");
+    var page_span = document.getElementById("page");
+
+    // Validate page
+    if (page < 1) page = 1;
+    if (page > numPages()) page = numPages();
+
+    listing_table.innerHTML = "";
+
+    for (var i = (page-1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+        listing_table.innerHTML += objJson[i].adName;
+    }
+    page_span.innerHTML = page + "/" + numPages();
+
+    if (page == 1) {
+        btn_prev.style.visibility = "hidden";
+    } else {
+        btn_prev.style.visibility = "visible";
+    }
+
+    if (page == numPages()) {
+        btn_next.style.visibility = "hidden";
+    } else {
+        btn_next.style.visibility = "visible";
+    }
+}
+
+function numPages()
+{
+    return Math.ceil(objJson.length / records_per_page);
+}
+
+window.onload = function() {
+    changePage(1);
+};
+</script>
+
+<nav aria-label="Navigation on pages">
+  <ul class="pagination justify-content-center">
+    <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:prevPage()" id="btn_prev">Prev</a></li>
+    <li class="page-item"><a class="page-link" style="color: #cccccc; background: #212529;"><span id="page"></span></a></li>
+    <li class="page-item"><a class="page-link" style="color: #333333;" href="javascript:nextPage()" id="btn_next">Next</a></li>
+  </ul>
+</nav>
+{% end %}

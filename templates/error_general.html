@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Error {{ status_code }}</title>
+  <link rel="stylesheet" href="{{static_url('css/error_gen.css')}}">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container">
+  <input type="checkbox" id="switch"/>
+  <div class="ellipse"></div>
+  <div class="ray"></div>
+  <div class="head"></div>
+  <div class="neck"></div>
+  <div class="body">
+    <label for="switch"></label>
+  </div>
+</div>
+<div class="container">
+  <div class="msg msg_1">{{ status_code }}</div>
+  <div class="msg msg_2">oh no...</div>
+</div>
+<!-- partial -->
+
+</body>
+</html>

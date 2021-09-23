@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if user.username == current_user.username %}
+  <form method="post" enctype="multipart/form-data">
+  {% raw xsrf_form_html() %}
+  <br>
+  <div class="row">
+      <div class="col">
+            <label for="inputGroupFile02" style="cursor: pointer;">
+                <img src="{{ static_url(f'{current_user.avatar[10:]}') }}" class="rounded-circle float-left" alt="avatar image" width="250" height="250">
+            </label>
+            <input id="inputGroupFile02" name="avatar" type="file" multiple accept="image/*" style="display:none;"/>
+      </div>
+      <div class="col">
+          <div class="d-grid gap-2 mx-auto" style="text-align:center;margin-top:15px;">
+              <div class="card">
+                <div class="alert alert-light alert-dismissible fade show" role="alert">
+                      All your teams (as well as the teams you are a member of) are located at this link
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="card-body">
+                    {% if teams_own %}
+                        Your last created team:<br><a href="/team/{{teams_own[-1].title}}/edit" style="color:#333333;"><strong>{{teams_own[-1].title}}</strong></a>
+                    {% else %}
+                        {% if current_user.is_confirmed %}
+                            You don't have your own teams yet. <a href="/{{current_user.username}}/create_team" style="color:#333333;">Try to create it right now!</a>
+                        {% else %}
+                            You can't create teams until <a href="/auth/confirm" style="color:#333333;"><strong>you confirm your email</strong></a>
+                        {% end %}
+                    {% end %}
+                </div>
+              </div>
+              <a href="/{{current_user.username}}/teams" class="btn btn-outline-dark">Your teams</a>
+          </div>
+      </div>
+      <div class="col">
+          <div class="d-grid gap-2 mx-auto" style="text-align:center;margin-top:15px;">
+              <div class="card">
+                <div class="alert alert-light alert-dismissible fade show" role="alert">
+                      The boards that you have created (and subscribed to) can be found at this link
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="card-body">
+                    {% if boards_own %}
+                        Your last created board:<br><a href="/board/{{boards_own[-1].title}}/view" style="color:#333333;"><strong>{{boards_own[-1].title}}</strong></a>
+                    {% else %}
+                        {% if current_user.is_confirmed %}
+                            You don't have your board yet. <a href="/{{current_user.username}}/create_board" style="color:#333333;">Try to create it right now!</a>
+                        {% else %}
+                            You can't create boards until <a href="/auth/confirm" style="color:#333333;"><strong>you confirm your email</strong></a>
+                        {% end %}
+                    {% end %}
+                </div>
+              </div>
+              <a href="/{{current_user.username}}/boards" class="btn btn-outline-dark">Your boards</a>
+          </div>
+      </div>
+  </div>
+  <br>
+
+    <div class="col" style="width:23em;">
+      {% if not current_user.name %}
+      <br><input type="text" class="form-control" placeholder="First name" name="first_name">
+      {% else %}
+      <br><input type="text" class="form-control" placeholder="First name" value="{{ current_user.name }}" required name="first_name">
+      {% end %}
+    </div>
+    <div class="col" style="width:23em;">
+      {% if not current_user.surname %}
+      <br><input type="text" class="form-control" placeholder="Last name" name="last_name">
+      {% else %}
+      <br><input type="text" class="form-control" placeholder="Last name" value="{{ current_user.surname }}" required name="last_name">
+      {% end %}
+    </div>
+    <div class="col" style="width:23em;">
+      {% if not current_user.is_reads %}
+      <br><div class="input-group mb-3">
+          <div class="input-group-text" style="background:white;">
+            <input name="check_13" class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+          </div>
+          <input name="check_13" type="text" class="form-control" style="background:white;" placeholder="Send me emails  (news and updates)" aria-label="..." disabled>
+      </div>
+      {% else %}
+      <br><div class="input-group mb-3">
+          <div class="input-group-text" style="background:white;">
+            <input name="check_13" class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input" checked>
+          </div>
+          <input name="check_13" type="text" class="form-control" style="background:white;" placeholder="Send me emails  (news and updates)" aria-label="..." disabled>
+      </div>
+      {% end %}
+    </div>
+  <br><button type="submit" class="btn btn-outline-warning btn-sm">Save changes</button><br><br>
+  </form>
+{% else %}
+<br><img src="{{ static_url(f'{user.avatar[10:]}') }}" class="rounded-circle float-left" alt="avatar image" width="250" height="250"><br><br>
+<form>
+    {% raw xsrf_form_html() %}
+    <div class="col">
+      <br><input type="text" class="form-control" placeholder="" value="{{ user.name }}" disabled>
+    </div>
+    <div class="col">
+      <br><input type="text" class="form-control" placeholder="" value="{{ user.surname }}" disabled>
+    </div>
+</form>
+{% end %}
+{% end %}
