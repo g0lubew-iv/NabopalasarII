@@ -469,7 +469,26 @@ class LegalCookiePolicyHandler(BaseHandler, ABC):
 class UserBoardsHandler(BaseHandler, ABC):
 	@tornado.web.authenticated
 	async def get(self):
-		await self.render("boards.html", title="Your boards")
+		username = str(self.request.uri).split('/')[-2]
+		db_sess = db_session.create_session()
+		user = self.get_user(username, db_sess)
+		if not user:
+			self.write_error(404)
+			return
+		if user.username != self.current_user.username:
+			# We cannot watch teams other user
+			self.write_error(403)
+			return
+		boards_own = db_sess.query(Boards).filter(Boards.admin == self.current_user.id).all()
+		boards = db_sess.query(Boards).all()
+		boards_in = []
+		for b in boards:
+			for user_ in b.board_users:
+				if user_.username == self.current_user.username:
+					boards_in.append(b)
+		await self.render(
+			"user_boards.html", title="Your boards", own_boards=boards_own, in_boards=boards_in,
+			get_admin=get_admin)
 
 
 class TeamEditHandler(BaseHandler, ABC):
@@ -996,13 +1015,22 @@ class UserEventHandler(BaseHandler, ABC):
 	async def get(self):
 		db_sess = db_session.create_session()
 		e = self.get_user_event(self.request.uri.split('/')[-1], db_sess)
-		await self.render("event.html", title=e.title[:25], event=e, url=self.request.uri)
+		current_user = self.get_user(self.current_user.username, db_sess)
+		if current_user in e.users:
+			self.write("You already got your answer.")
+			return
+		await self.render("event.html", title=e.title[:25].replace('&nbsp;', ' '), event=e, url=self.request.uri)
 
 	async def post(self):
 		db_sess = db_session.create_session()
 		event = self.get_user_event(self.request.uri.split('/')[-1], db_sess)
 		current_user = self.get_user(self.current_user.username, db_sess)
-		res = ''.join([self.request.body_arguments[key][0].decode() for key in self.request.body_arguments])
+		res = [self.request.body_arguments[key][0].decode() for key in self.request.body_arguments]
+		res_dict = {}
+		i = 0
+		while i < len(res) - 1:
+			res_dict[res[i]] = res[i + 1]
+			i += 2
 		if current_user not in event.users:
 			# User's answers are ready, now post!
 			event.users.append(current_user)
@@ -1010,14 +1038,14 @@ class UserEventHandler(BaseHandler, ABC):
 			db_sess.commit()
 			with open('auto/answers.json', mode='r', encoding='utf-8') as f:
 				data = json.load(f)
-			if event.id in data["user_answers"]:
-				data['user_answers'][event.id].append({current_user.username: res})
+			if str(event.id) in data["user_answers"]:
+				data['user_answers'][str(event.id)].append({current_user.username: res_dict})
 			else:
-				data['user_answers'][event.id] = [{current_user.username: res}]
+				data['user_answers'][event.id] = [{current_user.username: res_dict}]
 			with open('auto/answers.json', mode='w', encoding='utf-8') as file:
 				json.dump(data, file)
 		else:
-			self.write("You already get your answer")
+			self.write("You already got your answer.")
 
 
 class TeamEventHandler(BaseHandler, ABC):
@@ -1052,10 +1080,11 @@ class UserEventAnswersView(BaseHandler, ABC):
 		try:
 			res = data["user_answers"][str(event.id)]
 		except Exception:
-			# Oops! We don't exist!
-			self.write_error(404)
-		from pprint import pprint
-		pprint(res)
+			if str(event.id) not in data["user_answers"]:
+				res = []
+			else:
+				# Oops! We don't exist!
+				self.write_error(404)
 		await self.render(
 			"forms_answers_view.html", answers=res,
 			title="Check " + event.title[:20], event=event)

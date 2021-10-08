@@ -7,7 +7,7 @@
 <br>
 <div class="row">
     <div class="col">
-        <select class="form-select" id="SELECT" style="width:15em;" onclick="selectForm({{ list(map(lambda x: list(x)[0], answers)) }});">
+        <select class="form-select" id="SELECT_SEL" style="width:15em;" onclick="selectForm13({{ list(map(lambda x: list(x)[0], answers)) }}, {{answers}});">
                 <option class="selNone" value="none" selected>Nothing</option>
             {% for d in answers %}
                 <option class="SSS{{list(d)[0]}}" value="{{list(d)[0]}}" id="sel{{list(d)[0]}}">{{ list(d)[0] }}</option>
@@ -15,7 +15,6 @@
         </select>
     </div>
     <div class="col">
-        <!-- Кнопка выпадающего списка вправо по умолчанию -->
         <div class="btn-group dropend" style="margin-left:-20em;">
           <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             Actions
@@ -30,13 +29,8 @@
         </div>
     </div>
 </div>
-
-<div id="results">
-    {% for d in answers %}
-        <div class="sel{{list(d)[0]}}">{% raw d[list(d)[0]] %}</div>
-    {% end %}
-</div>
-
+<br>
+{% set res = event.html.replace("""<script src="{{static_url('js/create_event.js')}}"></script>""", "").replace('readonly', '').replace('disabled', '').replace('Detailed user answer', '').replace('Description', 'Without a description').replace('... And without a description?', 'Without a description').replace('And... new description?', 'Without a description').replace('Short user answer', '').replace('&nbsp;', '') %}
 <style>
     {% for d in answers %}
         .sel{{list(d)[0]}} {
@@ -44,4 +38,5 @@
         }
     {% end %}
 </style>
+{% raw res %}
 {% end %}

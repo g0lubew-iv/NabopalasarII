@@ -60,7 +60,7 @@ function getCookie(name) {
 
 jQuery.postJSON = function(url, args, callback) {
     args._xsrf = getCookie("_xsrf");
-    $.ajax({url: url, data: $.param(args), dataType: "text", type: "POST",
+    $.ajax({url: url, data: $.param(args), dataType: "json", type: "POST",
         success: function(response) {
     }});
 };
@@ -68,6 +68,19 @@ jQuery.postJSON = function(url, args, callback) {
 
 function closeEvent() {
     window.close();
+}
+
+
+function getParent(el) {
+    if (el.parentElement){
+        return el.parentElement;
+  }
+
+  if (el.parentNode){
+        return el.parentNode;
+  }
+
+  return null;
 }
 
 
@@ -87,8 +100,43 @@ function post_results(url_) {
 //        }
           res.push(answers[a]);
       }
-      $('main').html(res);
-      $.postJSON(url_, $('main').html());
+      const form_res = document.getElementById("event_questions");
+      results = {"textarea": [], "text": [], "radio": [], "checkbox": [], "file": []};
+      for (var el = 0; el < form_res.length - 2; el++) {
+          // last two elements of form are not inputs
+          if (form_res[el].tagName == 'TEXTAREA') {
+              if (form_res[el].value) {
+                  results["textarea"].push({"idElement": getParent(form_res[el]).id, "value": form_res[el].value});
+              }
+          }
+          else {
+              if (form_res[el].type == 'text') {
+                if (form_res[el].value) {
+                    results["text"].push({"idElement": getParent(getParent(form_res[el])).id, "value": form_res[el].value});
+                }
+              }
+              else
+                  if (form_res[el].type == 'radio') {
+                    if (form_res[el].checked) {
+                        results["radio"].push({"idElement": form_res[el].id, "value": form_res[el].value});
+                    }
+                  }
+                  else
+                      if (form_res[el].type == 'checkbox') {
+                        if (form_res[el].checked) {
+                            results["checkbox"].push({"idElement": form_res[el].id, "value": form_res[el].value});
+                        }
+                      }
+                      else
+                          if (form_res[el].type == 'file') {
+                            if (form_res[el].value) {
+                                results["file"].push({"idElement": form_res[el].id, "value": form_res[el].value});
+                            }
+                          }
+          }
+      }
+      // console.log(results);
+      $.postJSON(url_, results);
       $('main').html(`<br><br><div class="alert alert-success alert-dismissible fade show" role="alert">
                             <h4 class="alert-heading">Great, really!</h4>
                             <p>Oh yes, you have completed this event.<br>What to do with your answers next will be decided by the admin of this board.</p>
