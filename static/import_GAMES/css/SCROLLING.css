@@ -1,0 +1,51 @@
+html{
+  min-height: 100%;
+  min-width: 100%;
+}
+body{
+  font-family: sans-serif;
+  background-color: #f0f0f0;
+}
+.container{
+  font-size: 42px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  padding: auto;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  border-radius: 3px;
+}
+
+@keyframes pulse {
+    from {font-size: 32px;}
+    to {font-size: 40px;}
+}
+
+.headline{
+  text-align: center;
+  font-size: 42px;
+  color: #ecf0f1;
+  font-weight: bold;
+  animation-name: pulse;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+}
+.best{
+  margin-top: 20px;
+}

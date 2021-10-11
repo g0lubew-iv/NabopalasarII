@@ -14,7 +14,7 @@ from abc import ABC
 from decouple import config
 from tornado.options import options, define
 
-from token_n import generate_confirmation_token, generate_random_token, confirm_token
+from token_n import generate_confirmation_token, confirm_token
 from EmailSender import send_email
 from data import db_session
 from data.User import User, Notification
@@ -24,12 +24,9 @@ from data.Threads import Threads
 from data.User_events import UserEvents
 from data.Team_events import TeamEvents
 
-from forms.User import LoginForm, RegisterForm, DecorateForm
+from forms.User import LoginForm, RegisterForm
 from forms.Team import TeamRegisterForm
 from forms.Boards import FormBoardsCreate
-from forms.User_events import FormUserEvent, FormUserEventEdit
-from forms.Team_events import FormTeamEvent, FormTeamEventEdit
-from forms.add_team_to_event import AddTeam
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
@@ -122,6 +119,9 @@ class Application(tornado.web.Application):
 			# (r"/(ajax)$", AjaxHandler),
 			# For fun
 			(r"/generate_error/\d\d\d", ErrorGenerator),
+			(r"/chess$", ChessHandler),
+			(r"/runner", RunnerHandler),
+			(r"/scrolling", ScrollingHandler),
 			# Pages related to user invite
 			(r"/invite_team/\S+", InviteTeamHandler),
 			(r"/invite_board/\S+", InviteBoardHandler),
@@ -1103,6 +1103,21 @@ class UserEventEditHandler(BaseHandler, ABC):
 class TeamEventEditHandler(BaseHandler, ABC):
 	async def get(self):
 		pass
+
+
+class ChessHandler(BaseHandler, ABC):
+	async def get(self):
+		await self.render("CHESS.html", title="Chess")
+
+
+class RunnerHandler(BaseHandler, ABC):
+	async def get(self):
+		await self.render("RUNNER.html", title="Runner")
+
+
+class ScrollingHandler(BaseHandler, ABC):
+	async def get(self):
+		await self.render("SCROLLING.html", title="Scrolling")
 
 
 def main():
