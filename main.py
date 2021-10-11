@@ -115,13 +115,11 @@ class Application(tornado.web.Application):
 		handlers = [
 			# Home page
 			(r"/", HomeHandler),
-			# AJAX
-			# (r"/(ajax)$", AjaxHandler),
 			# For fun
 			(r"/generate_error/\d\d\d", ErrorGenerator),
 			(r"/chess$", ChessHandler),
-			(r"/runner", RunnerHandler),
-			(r"/scrolling", ScrollingHandler),
+			(r"/runner$", RunnerHandler),
+			(r"/scrolling$", ScrollingHandler),
 			# Pages related to user invite
 			(r"/invite_team/\S+", InviteTeamHandler),
 			(r"/invite_board/\S+", InviteBoardHandler),

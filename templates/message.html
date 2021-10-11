@@ -1,6 +1,15 @@
 {% set now = datetime.datetime.now() %}
-<div class="col"><a href="/{{ current_user }}"><img src="{{ static_url(f'{current_user.avatar[10:]}') }}" class="rounded-circle" alt="..." width="32" height="32" style="margin-left:15px;margin-top:15px;"></a></div>
-<div class="message" id="m{{ message['id'] }}">
-    {% module linkify(message["body"]) %}
-    <br><span style="margin-left:15px;" class="message-data-time"><small style="color:#cccccc;font-size:10px;">Written {{now.day}}.{{now.month}}.{{now.year}} at {{now.hour}}:{{now.minute}}</small></span>
+<div class="message-group">
+    <div class="header-group">
+      <div class="avatar">
+        <a href="/{{ current_user }}"><img src="{{ static_url(f'{current_user.avatar[10:]}') }}" class="rounded-circle" alt="..." width="32" height="32" style="margin-left:15px;margin-top:15px;"></a>
+      </div>
+      <div class="header">{{ current_user.username }}<span class="timestamp">{{ str(now).split(':')[0] + ':' + str(now).split(':')[1] }}</span></div>
+    </div>
+    <div class="message">
+        <div class="content">
+            {% module linkify(message["body"]) %}
+        </div>
+    <hr class="divider"/>
+    </div>
 </div>
