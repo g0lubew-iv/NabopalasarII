@@ -31,28 +31,6 @@ function fileIsLoaded() {
 }
 
 
-//$("form[name='uploader']").submit(function(e) {
-//        var formData = new FormData($(this)[0]);
-//
-//        $.ajax({
-//            url: {{ static_url('php/upload_files.php') }},
-//            type: "POST",
-//            data: formData,
-//            async: false,
-//            success: function (msg) {
-//                alert(msg);
-//            },
-//            error: function(msg) {
-//                alert('Ошибка!');
-//            },
-//            cache: false,
-//            contentType: false,
-//            processData: false
-//        });
-//        e.preventDefault();
-//    });
-
-
 function changeColor(Color) {
     var forms = document.getElementsByName("Form");
     for (var f = 0; f < numberForms; f++) {

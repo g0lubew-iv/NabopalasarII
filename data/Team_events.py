@@ -23,4 +23,4 @@ class TeamEvents(SqlAlchemyBase, SerializerMixin):
     html = sqlalchemy.Column(sqlalchemy.String)  # html forms of the team event
 
     def __repr__(self):
-        return "Командное мероприятие " + self.title
+        return "Team event " + self.title

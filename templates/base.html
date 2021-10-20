@@ -151,6 +151,46 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% end %}
+        <!-- Games description (with the links) -->
+        <br>
+        <div id="carouselGames" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselGames" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Chess"></button>
+            <button type="button" data-bs-target="#carouselGames" data-bs-slide-to="1" aria-label="Run, run faster!"></button>
+            <button type="button" data-bs-target="#carouselGames" data-bs-slide-to="2" aria-label="Scroll it!"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ static_url('img/news/chess.png') }}" class="d-block w-100" alt="...">
+              <div class="carousel-caption d-none d-md-block">
+                  <h5><a href="/chess" style="color:white;text-decoration:none;">Chess</a></h5>
+                  <p>Relax and train your brains in new chess game, or compete with your friends!</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="{{ static_url('img/news/runner.jpg') }}" class="d-block w-100" alt="...">
+              <div class="carousel-caption d-none d-md-block">
+                <h5><a href="/runner" style="color:white;text-decoration:none;">Run, run faster!</a></h5>
+                <p>Run! Collect all the coins and complete all the levels! All the Sumerians are already here...</p>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img src="{{ static_url('img/news/scroll.jpg') }}" class="d-block w-100" alt="...">
+              <div class="carousel-caption d-none d-md-block">
+                <h5><a href="/scrolling" style="color:white;text-decoration:none;">Scroll it!</a></h5>
+                <p>Scroll it! Scroll it! Scroll it!</p>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselGames" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselGames" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
         <!-- Most important content: news, boards, teams, etc -->
         <br>
         <nav class="nav nav-pills flex-column flex-sm-row">
@@ -167,7 +207,7 @@
                 {% for new in news_[::-1] %}
                     { adName: `<br>
                                 {% if not current_user %}
-                                    <!-- We can't show news from the boards if the user is not registered, only news of our team :( -->
+                                    <!-- We can show news from the boards if the user is not registered, only news of our team :( -->
                                     {% if "Nabopalasar II team" in new %}
                                         {% raw new %}
                                     {% end %}

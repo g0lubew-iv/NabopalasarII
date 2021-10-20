@@ -1022,6 +1022,8 @@ class UserEventHandler(BaseHandler, ABC):
 	async def post(self):
 		db_sess = db_session.create_session()
 		event = self.get_user_event(self.request.uri.split('/')[-1], db_sess)
+		if not event:
+			return
 		current_user = self.get_user(self.current_user.username, db_sess)
 		res = [self.request.body_arguments[key][0].decode() for key in self.request.body_arguments]
 		res_dict = {}
@@ -1053,7 +1055,6 @@ class TeamEventHandler(BaseHandler, ABC):
 	async def get(self):
 		db_sess = db_session.create_session()
 		e = self.get_team_event(self.request.uri.split('/')[-1], db_sess)
-		# TODO: мы должны понять, от имени какой команды участвует здесь юзер
 		await self.render("event.html", title=e.title[:25], event=e, url=self.request.uri)
 
 	async def post(self):
@@ -1094,8 +1095,42 @@ class TeamEventAnswersView(BaseHandler, ABC):
 
 
 class UserEventEditHandler(BaseHandler, ABC):
-	async def get(self):
+	def check_xsrf_cookie(self) -> None:
 		pass
+
+	async def get(self):
+		db_sess = db_session.create_session()
+		event = self.get_user_event(self.request.uri.split('/')[-1], db_sess)
+		if not event:
+			return
+		await self.render(
+			"edit_user_event.html", event=event, title="Edit " + event.title[:20], url=self.request.uri)
+
+	@tornado.web.authenticated
+	async def post(self):
+		if self.request.body_arguments and self.request.body:
+			db_sess = db_session.create_session()
+			id_ = self.request.uri.split('/')[-1]
+			board = self.get_board(self.request.uri.split('/')[-4], db_sess)
+			event = self.get_user_event(id_, db_sess)
+			event.html = ''.join(
+				[self.request.body_arguments[key][0].decode() for key in self.request.body_arguments])
+			event.html = event.html.replace(
+				f'''<button type="button" class="btn btn-outline-warning btn-lg" 
+				onclick="save_changes('/board/{board.title}/user_event/edit/{id_}');">Edit</button>''', '')
+			event.about = event.html.split(
+				'<div class="flexSmallInput" name="description_event" contenteditable="true">')[1].split('</div>')[0]
+			if event.users:
+				for i in event.users:
+					del event.users[event.users.index(i)]
+				# delete user's answers from db and json files
+				with open('auto/answers.json', mode='r', encoding='utf-8') as f:
+					data = json.load(f)
+				data['user_answers'][id_] = []
+				with open('auto/answers.json', mode='w', encoding='utf-8') as file:
+					json.dump(data, file)
+			db_sess.add(event)
+			db_sess.commit()
 
 
 class TeamEventEditHandler(BaseHandler, ABC):
