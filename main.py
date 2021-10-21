@@ -461,7 +461,7 @@ class LegalHandler(BaseHandler, ABC):
 
 class LegalCookiePolicyHandler(BaseHandler, ABC):
 	async def get(self):
-		await self.render("boards.html", title="Cookie Policy")
+		await self.render("cookies_about.html", title="Cookie Policy")
 
 
 class UserBoardsHandler(BaseHandler, ABC):
