@@ -1,9 +1,10 @@
 # IntelliJ project files
-.idea
 *.iml
 out
 gen
 
 # Files (and directories) that affect our privacy
 .env
-auto
+__pycache__/
+data/__pycache__/
+forms/__pycache__/
