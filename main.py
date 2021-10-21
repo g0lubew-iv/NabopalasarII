@@ -48,7 +48,7 @@ class AlchemyEncoder(json.JSONEncoder):
 		return json.JSONEncoder.default(self, obj)
 
 
-define("port", default=8888, help="run on the given port", type=int)
+define("port", default=int(os.environ.get("PORT", 5000)), help="run on the given port", type=int)
 CACHE_SIZE = 50  # Maximum number of messages on the board
 
 
@@ -1182,5 +1182,4 @@ def main():
 
 
 if __name__ == "__main__":
-	print("* Running on http://127.0.0.1:8888")
 	main()
