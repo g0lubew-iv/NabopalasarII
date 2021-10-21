@@ -3,6 +3,7 @@ sqlalchemy_serializer~=1.4.1
 DateTime~=4.3
 Werkzeug==2.0.1
 WTForms~=2.3.3
+wtforms-tornado
 tornado~=6.1
 pytz~=2021.1
 itsdangerous==2.0.1
