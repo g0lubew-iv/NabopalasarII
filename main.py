@@ -286,7 +286,8 @@ class AuthCreateHandler(BaseHandler, ABC):
 				username=form.username.data,
 				email=form.email.data,
 				hashed_password=form.password_again.data,
-				is_reads=False
+				is_reads=False,
+				is_confirmed=True  # Heroku does not like my email posts (
 			)
 			user.set_password(form.password.data)
 			db_sess.add(user)
@@ -323,11 +324,12 @@ class AuthConfirmHandler(BaseHandler, ABC):
 		           f"With best wishes,\n" \
 		           f"akkadian team Nabopalasar II"
 		try:
-			if send_email(
-					self.current_user.email, "Nabopalasar II: email confirmation", text_msg,
-					"../static/img/news/womans_img.jpg"):
-				await self.render("auth_confirm.html", title="Confirm", email=self.current_user.email, success=True)
-				return
+			# if send_email(
+			# 		self.current_user.email, "Nabopalasar II: email confirmation", text_msg,
+			# 		"../static/img/news/womans_img.jpg"):
+			# 	await self.render("auth_confirm.html", title="Confirm", email=self.current_user.email, success=True)
+			# 	return
+			pass
 		except Exception:
 			await self.render("auth_confirm.html", title="Confirm", email=self.current_user.email, success=False)
 
