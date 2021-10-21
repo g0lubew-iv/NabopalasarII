@@ -262,7 +262,7 @@ class AuthCreateHandler(BaseHandler, ABC):
 	async def get(self):
 		form = RegisterForm(self.request.arguments)
 		await self.render(
-			"auth_create.html", form=form, title="Registration", message_username=None, message_email=None,
+			"auth_create.html", form=form, title="Sign Up", message_username=None, message_email=None,
 			message_password=None, )
 
 	def post(self):
@@ -294,7 +294,8 @@ class AuthCreateHandler(BaseHandler, ABC):
 			self.set_secure_cookie("user", str(form.email.data))
 			# self.current_user = str(form.email.data)
 			# The user immediately logs in; now you need to confirm your email address
-			self.redirect("/auth/confirm")
+			# self.redirect("/auth/confirm")
+			self.redirect("/")
 			return
 		return self.render(
 			"auth_create.html", form=form, title="Registration Error", message_username=None,
@@ -324,7 +325,7 @@ class AuthConfirmHandler(BaseHandler, ABC):
 		try:
 			if send_email(
 					self.current_user.email, "Nabopalasar II: email confirmation", text_msg,
-					"../static/img/package/womans.jpg"):
+					"../static/img/news/womans_img.jpg"):
 				await self.render("auth_confirm.html", title="Confirm", email=self.current_user.email, success=True)
 				return
 		except Exception:
